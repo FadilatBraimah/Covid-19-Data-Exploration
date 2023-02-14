@@ -1,7 +1,14 @@
+/*
+Covid 19 Data Exploration 
+Skills used: Joins, CTE's, Temp Tables, Windows Functions, Aggregate Functions, Creating Views, Converting Data Types
+*/
+
+--Select the data we are going to start with
 SELECT *
 FROM CovidDealth
 ORDER BY 3,4
 
+--A quick view from the second dataset
 
 --SELECT *
 --FROM CovidVaccine
@@ -10,6 +17,7 @@ ORDER BY 3,4
 
 --Looking at total_cases vs total_deaths
 --Likelihood of dying if you contact covid in your state
+
 SELECT location, date, total_cases, total_deaths, (total_deaths/total_cases)*100 AS DeathPercentage
 FROM CovidDealth
 WHERE location LIKE '%state%'
@@ -17,12 +25,14 @@ AND continent IS NOT NULL
 ORDER BY  1,2
 
 --Looking at total_cases vs population
+
 SELECT location, date, population, total_cases, (total_cases/population)*100 AS PercentageInfected
 FROM CovidDealth
 --WHERE location LIKE '%state%'
 ORDER BY  1,2
 
 --Looking at countries with the Highest Infection Rate compared to population
+
 SELECT location, population, MAX(total_cases)AS HighestInfectionCount, MAX(total_cases/population)*100 AS PercentagePopulationInfected
 FROM CovidDealth
 --WHERE location LIKE 'Nig%' AND continent IS NOT NULL
@@ -30,6 +40,7 @@ GROUP BY location, population
 ORDER BY PercentagePopulationInfected Desc
 
 --Showing countries with Highest Death Count per population
+
 SELECT location, MAX(CAST(total_deaths as bigint)) AS TotalDeathCount
 FROM CovidDealth
 --WHERE location LIKE 'Nig%'
@@ -37,7 +48,8 @@ WHERE continent is NOT NULL
 GROUP BY location
 ORDER BY TotalDeathCount Desc
 
---Breaking it down by continent
+--Breaking it down(Highest Death Count) by continent
+
 SELECT continent, MAX(CAST(total_deaths as bigint)) AS TotalDeathCount
 FROM CovidDealth
 --WHERE location LIKE 'Nig%'
@@ -46,6 +58,7 @@ GROUP BY continent
 ORDER BY TotalDeathCount Desc
 
 --Global Numbers
+
 SELECT SUM(new_cases) AS TotalNewCases, SUM(CAST(new_deaths as bigint)) AS TotalNewDeath, SUM(CAST(new_deaths as bigint))/SUM(new_cases)*100 AS DeathPercentage
 FROM CovidDealth
 WHERE continent is NOT NULL
@@ -60,7 +73,7 @@ ORDER BY DeathPercentage Desc
 --GROUP BY continent
 --ORDER BY DeathPercentage Desc
 
-
+--Now working on the second dataset
 --Covid vaccine dataset
 SELECT *
 FROM CovidVaccine
@@ -68,7 +81,7 @@ WHERE continent IS NOT NULL
 ORDER BY 3,4
 
 
---Lets join the CovidDeath table with CovidVaccine Table
+--Lets join the CovidDealth table with CovidVaccine Table
 SELECT *
 FROM CovidDealth as cd
 INNER JOIN CovidVaccine as cv
